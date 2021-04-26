@@ -2,6 +2,7 @@ import React, {useState}from "react";
 import {SearchBox} from "./components/searchBox";
 import "./style.css"
 import data from "../../data/user.json";
+import { SearchResult } from "./components/searchResults";
 
 export const Search = ()=>{
 
@@ -10,33 +11,32 @@ export const Search = ()=>{
     const [results, setResults] = useState([]);
     
     const handleViewOpenCloseSearch = ()=>{
-        setIsatTop(!isAtTop);
+        setIsatTop(false);
+        setResults([]);
     }
 
     const handleSearch = (searchText) => {
-        setIsatTop(!isAtTop);
+        setIsatTop(true);
         if (userData?.length) { 
             const minusText = searchText.toLowerCase();
             console.log(minusText);
-            const filteredData = userData.filter((user)=>{
-                return(
+            const filteredData = userData.filter((user)=>
+            // validación encerrada con () sin return, pues es una arrow
+                (
                     user.name.toLowerCase().includes(minusText) || 
                     user.phone.toLowerCase().includes(minusText) ||
                     user.email.toLowerCase().includes(minusText) ||
                     user.username.toLowerCase().includes(minusText)                
                     )
-                }
             );
-            console.log(filteredData);
             setResults(filteredData);
-            console.log(results);
         }  
-        console.log(results);
     }
 
     return(
        <div className= {`search ${isAtTop ? "searchTop" : "searchCenter"}`}> 
-            <SearchBox onSearch={handleSearch} onClose={handleViewOpenCloseSearch}/>
+            <SearchBox onSearch={handleSearch} onClose={handleViewOpenCloseSearch} isSearching={isAtTop}/>
+            <SearchResult results={results} isSearching={isAtTop}/>
         </div>
     )
 
