@@ -1,13 +1,21 @@
-import React, {useState}from "react";
+import React, {useState, useEffect}from "react";
 import {SearchBox} from "./components/searchBox";
 import "./style.css"
-import data from "../../data/user.json";
 import { SearchResult } from "./components/searchResults";
 
 export const Search = ()=>{
+    const [data, setData] = useState([])
+
+    useEffect(()=>{
+        const getUsers = async()=>{
+            fetch("https://jsonplaceholder.typicode.com/users")
+            .then(res=>res.json())
+            .then(res=> { setData(res)});
+        }
+        getUsers();
+    },[] )
 
     const [isAtTop, setIsatTop] = useState(false);
-    const [userData, setUserData] = useState (data);
     const [results, setResults] = useState([]);
     
     const handleViewOpenCloseSearch = ()=>{
@@ -17,10 +25,10 @@ export const Search = ()=>{
 
     const handleSearch = (searchText) => {
         setIsatTop(true);
-        if (userData?.length) { 
+        if (data?.length) { 
             const minusText = searchText.toLowerCase();
             console.log(minusText);
-            const filteredData = userData.filter((user)=>
+            const filteredData = data.filter((user)=>
             // validación encerrada con () sin return, pues es una arrow
                 (
                     user.name.toLowerCase().includes(minusText) || 
